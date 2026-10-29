@@ -10,7 +10,7 @@ A simple Flask web app with two AI tools:
 
 1. Clone. The brain model is stored with Git LFS, so run `git lfs install` before cloning.
    ```
-   git clone https://github.com/<your-username>/MediPredict.git
+   git clone https://github.com/austinantonyroy/AI-Based-Multi-Disease-Medical-Screening-and-Prediction-System.git
    ```
 2. Install: `pip install -r requirements.txt`
 3. Train: `python train.py`. You only need to do this once; it creates `model.pkl`.
