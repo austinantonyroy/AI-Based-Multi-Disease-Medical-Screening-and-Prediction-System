@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Brain MRI{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Brain Tumor MRI Classification</h1>
+  <p>Upload a brain MRI image (JPG or PNG). The first prediction takes a few seconds while the model loads.</p>
+</div>
+
+<div class="layout">
+  <form method="post" enctype="multipart/form-data" class="card form-card">
+    <label class="dropzone" id="dropzone">
+      <input type="file" name="image" id="file" accept="image/*" required>
+      <img id="preview" alt="Selected MRI preview" hidden>
+      <div class="drop-text" id="dropText">
+        <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
+        <strong>Drag &amp; drop an MRI scan here</strong>
+        <span>or click to browse</span>
+      </div>
+    </label>
+    <div class="actions">
+      <span class="muted small" id="fileName">No file selected</span>
+      <button type="submit" class="btn primary">Analyze scan</button>
+    </div>
+  </form>
+
+  <aside class="card result-card">
+    {% if result %}
+      <h2>Result</h2>
+      <img src="{{ result.image }}" alt="Uploaded MRI" class="scan">
+      <div class="badge {{ 'low' if result.key == 'no_tumor' else 'high' }}">{{ result.name }}</div>
+      <p class="confidence"><strong>{{ result.confidence }}%</strong> confidence</p>
+      <p class="muted">{{ result.info }}</p>
+      <h3>All classes</h3>
+      {% for name, p in result.probs %}
+      <div class="bar-row">
+        <span>{{ name }}</span>
+        <div class="bar"><div class="fill" style="width: {{ p }}%"></div></div>
+        <span class="pct">{{ p }}%</span>
+      </div>
+      {% endfor %}
+      <p class="small muted">Please consult a radiologist for an actual diagnosis.</p>
+    {% else %}
+      <div class="empty">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+        <h2>Your result will appear here</h2>
+        <p class="muted">Upload a scan and click <strong>Analyze scan</strong>.</p>
+      </div>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  var input = document.getElementById("file");
+  var zone = document.getElementById("dropzone");
+
+  function show(file) {
+    if (!file) return;
+    document.getElementById("fileName").textContent = file.name;
+    var preview = document.getElementById("preview");
+    preview.src = URL.createObjectURL(file);
+    preview.hidden = false;
+    document.getElementById("dropText").hidden = true;
+  }
+
+  input.addEventListener("change", function () { show(input.files[0]); });
+  ["dragover", "dragenter"].forEach(function (e) {
+    zone.addEventListener(e, function (ev) { ev.preventDefault(); zone.classList.add("over"); });
+  });
+  ["dragleave", "drop"].forEach(function (e) {
+    zone.addEventListener(e, function () { zone.classList.remove("over"); });
+  });
+  zone.addEventListener("drop", function (ev) {
+    ev.preventDefault();
+    input.files = ev.dataTransfer.files;
+    show(input.files[0]);
+  });
+</script>
+{% endblock %}

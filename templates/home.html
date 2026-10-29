@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="hero">
+  <span class="pill">AI in Healthcare</span>
+  <h1>Smarter health screening,<br><span class="accent">powered by machine learning</span></h1>
+  <p class="lead">Two AI tools for early screening: estimate diabetes risk from routine
+    clinical values, or classify brain MRI scans for common tumor types.</p>
+</section>
+
+<section class="tools">
+  <a href="{{ url_for('diabetes') }}" class="tool-card">
+    <div class="tool-icon teal">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7s6 6.6 6 11.3a6 6 0 0 1-12 0c0-4.7 6-11.3 6-11.3z"/></svg>
+    </div>
+    <h2>Diabetes Risk Prediction</h2>
+    <p>Enter 8 clinical measurements such as glucose, BMI and age to get an instant risk estimate.</p>
+    <ul class="meta">
+      <li>Random Forest</li><li>768 patients</li><li>~77% accuracy</li>
+    </ul>
+    <span class="cta">Start assessment &rarr;</span>
+  </a>
+
+  <a href="{{ url_for('brain') }}" class="tool-card">
+    <div class="tool-icon violet">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 0 7 4.5v.1A3 3 0 0 0 4.5 9a3 3 0 0 0 .5 5.6A3 3 0 0 0 9 19.5 2.5 2.5 0 0 0 12 21V4.5A2.5 2.5 0 0 0 9.5 2z"/><path d="M14.5 2A2.5 2.5 0 0 1 17 4.5v.1A3 3 0 0 1 19.5 9a3 3 0 0 1-.5 5.6 3 3 0 0 1-4 4.9A2.5 2.5 0 0 1 12 21"/></svg>
+    </div>
+    <h2>Brain Tumor MRI Classification</h2>
+    <p>Upload a brain MRI scan and the CNN model identifies glioma, meningioma, pituitary tumor or no tumor.</p>
+    <ul class="meta">
+      <li>CNN (TensorFlow)</li><li>3,264 MRI scans</li><li>4 classes</li>
+    </ul>
+    <span class="cta">Upload a scan &rarr;</span>
+  </a>
+</section>
+
+<section class="steps">
+  <div class="step"><span>1</span><div><h3>Enter data</h3><p>Type clinical values or upload an MRI image.</p></div></div>
+  <div class="step"><span>2</span><div><h3>AI analysis</h3><p>A trained model processes the input in seconds.</p></div></div>
+  <div class="step"><span>3</span><div><h3>Get results</h3><p>See the prediction with a clear confidence score.</p></div></div>
+</section>
+{% endblock %}

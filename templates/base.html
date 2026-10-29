@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}MediPredict{% endblock %} · MediPredict</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="{{ url_for('home') }}" class="brand">
+        <span class="brand-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
+        </span>
+        MediPredict
+      </a>
+      <nav class="nav">
+        <a href="{{ url_for('home') }}" class="{{ 'active' if page == 'home' }}">Home</a>
+        <a href="{{ url_for('diabetes') }}" class="{{ 'active' if page == 'diabetes' }}">Diabetes</a>
+        <a href="{{ url_for('brain') }}" class="{{ 'active' if page == 'brain' }}">Brain MRI</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <strong>Disclaimer:</strong> MediPredict is a student AI project for educational purposes only.
+      It is not a medical device and does not replace diagnosis by a qualified doctor.
+    </div>
+  </footer>
+
+  <script>
+    // Show a loading state on any form while the model is working
+    document.querySelectorAll("form").forEach(function (form) {
+      form.addEventListener("submit", function () {
+        var btn = form.querySelector("button[type=submit]");
+        if (btn) { btn.classList.add("loading"); btn.disabled = true; }
+      });
+    });
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

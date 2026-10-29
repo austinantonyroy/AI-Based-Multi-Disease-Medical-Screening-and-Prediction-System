@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Diabetes Risk{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Diabetes Risk Prediction</h1>
+  <p>Fill in the patient's clinical values. Fields marked <em>optional</em> can be left empty (treated as 0).</p>
+</div>
+
+<div class="layout">
+  <form method="post" class="card form-card">
+    <div class="grid">
+      {% set gender = request.form.get('Gender', 'female') %}
+      <label class="field">
+        <span class="field-label">Gender</span>
+        <span class="input-wrap">
+          <select name="Gender" id="gender">
+            <option value="female" {{ 'selected' if gender == 'female' }}>Female</option>
+            <option value="male" {{ 'selected' if gender == 'male' }}>Male</option>
+          </select>
+        </span>
+        <span class="hint">Pregnancies is only asked for females</span>
+      </label>
+      {% for f in fields %}
+      <label class="field" id="field-{{ f.name }}" {% if f.name == 'Pregnancies' and gender == 'male' %}hidden{% endif %}>
+        <span class="field-label">{{ f.label }} {% if f.optional %}<em>optional</em>{% endif %}</span>
+        <span class="input-wrap">
+          <input type="number" step="any" min="0" name="{{ f.name }}" placeholder="{{ f.placeholder }}"
+                 value="{{ request.form.get(f.name, '') }}" {% if not f.optional %}required{% endif %}>
+          <span class="unit">{{ f.unit }}</span>
+        </span>
+        <span class="hint">{{ f.hint }}</span>
+      </label>
+      {% endfor %}
+    </div>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="sample">Fill sample patient</button>
+      <button type="submit" class="btn primary">Predict risk</button>
+    </div>
+  </form>
+
+  <aside class="card result-card">
+    {% if result %}
+      <h2>Result</h2>
+      <div class="gauge {{ result.level }}" style="--p: {{ result.percent }}">
+        <div class="gauge-inner">
+          <strong>{{ result.percent }}%</strong>
+          <span>chance of diabetes</span>
+        </div>
+      </div>
+      <div class="badge {{ result.level }}">{{ result.level|title }} risk</div>
+      {% if result.notes %}
+        <h3>Things to watch</h3>
+        <ul class="notes">
+          {% for n in result.notes %}<li>{{ n }}</li>{% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">No individual values are outside common clinical thresholds.</p>
+      {% endif %}
+      <p class="small muted">Please consult a doctor for an actual diagnosis.</p>
+    {% else %}
+      <div class="empty">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
+        <h2>Your result will appear here</h2>
+        <p class="muted">Fill in the form and click <strong>Predict risk</strong>.</p>
+      </div>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  var gender = document.getElementById("gender");
+  function updateGender() {
+    var pregField = document.getElementById("field-Pregnancies");
+    pregField.hidden = gender.value === "male";
+    if (gender.value === "male") pregField.querySelector("input").value = "";
+  }
+  gender.addEventListener("change", updateGender);
+
+  document.getElementById("sample").addEventListener("click", function () {
+    gender.value = "female";
+    updateGender();
+    var sample = {Pregnancies: 6, Glucose: 148, BloodPressure: 72, SkinThickness: 35,
+                  Insulin: 0, BMI: 33.6, DiabetesPedigreeFunction: 0.627, Age: 50};
+    for (var k in sample) document.querySelector("[name=" + k + "]").value = sample[k];
+  });
+</script>
+{% endblock %}
